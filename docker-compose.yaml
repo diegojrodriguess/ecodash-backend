@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: ecodash
+      POSTGRES_PASSWORD: ecodash_password
+      POSTGRES_DB: ecodash_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+
+
+volumes:
+  db_data:

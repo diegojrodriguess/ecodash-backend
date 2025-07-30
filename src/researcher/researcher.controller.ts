@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { ResearcherService } from './researcher.service';
+import { CreateResearcherDto } from './dto/create-researcher.dto';
+import { UpdateResearcherDto } from './dto/update-researcher.dto';
 
 @Controller('researchers')
 export class ResearcherController {
@@ -16,13 +18,13 @@ export class ResearcherController {
   }
 
   @Post()
-  create(@Body('name') name: string) {
-    return this.researcherService.create(name);
+  create(@Body() dto: CreateResearcherDto) {
+    return this.researcherService.create(dto.name);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body('name') name: string) {
-    return this.researcherService.update(id, name);
+  update(@Param('id') id: string, @Body() dto: UpdateResearcherDto) {
+    return this.researcherService.update(id, dto.name);
   }
 
   @Delete(':id')

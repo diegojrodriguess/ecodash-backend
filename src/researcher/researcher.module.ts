@@ -9,6 +9,6 @@ import { ResearcherRepository } from './researcher.repository';
   imports: [TypeOrmModule.forFeature([Researcher])],
   controllers: [ResearcherController],
   providers: [ResearcherService, ResearcherRepository],
-  exports: [ResearcherService], 
+  exports: [ResearcherService, ResearcherRepository], 
 })
 export class ResearcherModule {}

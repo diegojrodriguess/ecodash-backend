@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { Project } from './entities/project.entity';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -18,13 +19,13 @@ export class ProjectController {
   }
 
   @Post()
-  create(@Body() body: Partial<Project>) {
-    return this.projectService.create(body);
+  create(@Body() dto: CreateProjectDto) {
+    return this.projectService.create(dto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() body: Partial<Project>) {
-    return this.projectService.update(id, body);
+  update(@Param('id') id: string, @Body() dto: UpdateProjectDto) {
+    return this.projectService.update(id, dto);
   }
 
   @Delete(':id')

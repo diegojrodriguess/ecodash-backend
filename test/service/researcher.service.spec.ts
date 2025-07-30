@@ -3,6 +3,8 @@ import { ResearcherService } from '../../src/researcher/researcher.service';
 import { ResearcherRepository } from '../../src/researcher/researcher.repository';
 import { Researcher } from '../../src/researcher/entities/researcher.entity';
 import { NotFoundException } from '@nestjs/common';
+import { mockResearcher, researchers } from '../mocks/entities';
+
 
 jest.mock('../../src/researcher/researcher.repository', () => {
     return {
@@ -27,72 +29,36 @@ describe('ResearcherService', () => {
     });
 
     it('should find all researchers', async () => {
-        const mockResearchers: Researcher[] = [
-            {
-                id: '1',
-                name: 'Researcher One',
-                projects: [],
-            },
-            {
-                id: '2',
-                name: 'Researcher Two',
-                projects: [],
-            },
-        ];
-        jest
-            .spyOn(researcherRepository, 'findAll')
-            .mockResolvedValue(mockResearchers);
+        jest.spyOn(researcherRepository, 'findAll').mockResolvedValue(researchers);
 
-        const researchers = await researcherService.findAll();
-        expect(researchers).toEqual(mockResearchers);
+        const result = await researcherService.findAll();
+        expect(result).toEqual(researchers);
     });
 
     it('should find a researcher by ID', async () => {
-        const mockResearcher: Researcher = {
-            id: '1',
-            name: 'Researcher One',
-            projects: [],
-        };
-        jest
-            .spyOn(researcherRepository, 'findById')
-            .mockResolvedValue(mockResearcher);
+        jest.spyOn(researcherRepository, 'findById').mockResolvedValue(mockResearcher);
 
-        const researcher = await researcherService.findById('1');
-        expect(researcher).toEqual(mockResearcher);
+        const result = await researcherService.findById('1');
+        expect(result).toEqual(mockResearcher);
     });
 
     it('should create a new researcher', async () => {
-        const mockResearcher: Researcher = {
-            id: '1',
-            name: 'New Researcher',
-            projects: [],
-        };
-        jest
-            .spyOn(researcherRepository, 'create')
-            .mockResolvedValue(mockResearcher);
+        jest.spyOn(researcherRepository, 'create').mockResolvedValue(mockResearcher);
 
-        const researcher = await researcherService.create('New Researcher');
-        expect(researcher).toEqual(mockResearcher);
+        const result = await researcherService.create('Jane Doe');
+        expect(result).toEqual(mockResearcher);
     });
 
     it('should update an existing researcher', async () => {
-        const mockResearcher: Researcher = {
-            id: '1',
-            name: 'Updated Researcher',
-            projects: [],
-        };
-        jest
-            .spyOn(researcherRepository, 'update')
-            .mockResolvedValue(mockResearcher);
+        const updated = { ...mockResearcher, name: 'Updated Name' };
+        jest.spyOn(researcherRepository, 'update').mockResolvedValue(updated);
 
-        const updatedResearcher = await researcherService.update(
-            '1',
-            'Updated Researcher',
-        );
-        expect(updatedResearcher).toEqual(mockResearcher);
+        const result = await researcherService.update('1', 'Updated Name');
+        expect(result).toEqual(updated);
     });
 
     it('should delete a researcher by ID', async () => {
+        jest.spyOn(researcherRepository, 'findById').mockResolvedValue(mockResearcher);
         jest.spyOn(researcherRepository, 'delete').mockResolvedValue();
 
         await expect(researcherService.delete('1')).resolves.toBeUndefined();
@@ -121,7 +87,7 @@ describe('ResearcherService', () => {
             `Cannot delete. Researcher with ID 'nonexistent-id' not found.`,
         );
     });
-    
+
     it('should throw NotFoundException if researcher not found on findById', async () => {
         jest.spyOn(researcherRepository, 'findById').mockResolvedValue(null);
 

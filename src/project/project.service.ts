@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProjectRepository } from './project.repository';
+import { ResearcherRepository } from '../researcher/researcher.repository';
 import { Project } from './entities/project.entity';
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly projectRepo: ProjectRepository) {}
+  constructor(
+    private readonly projectRepo: ProjectRepository,
+    private readonly researcherRepo: ResearcherRepository,
+  ) {}
 
   async findAll(): Promise<Project[]> {
     return this.projectRepo.findAll();
@@ -23,6 +27,12 @@ export class ProjectService {
   }
 
   async create(projectData: Partial<Project>): Promise<Project> {
+    const researcher = await this.researcherRepo.findById(projectData.researcher.id);
+    if (!researcher) {
+      throw new NotFoundException(
+        `Cannot create project. Researcher with ID '${projectData.researcher.id}' not found.`,
+      );
+    }
     return this.projectRepo.create(projectData);
   }
 

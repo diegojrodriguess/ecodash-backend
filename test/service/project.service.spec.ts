@@ -1,9 +1,10 @@
 import { describe, expect, beforeAll, jest, it } from '@jest/globals';
 import { ProjectService } from '../../src/project/project.service';
 import { ProjectRepository } from '../../src/project/project.repository';
+import { ResearcherRepository } from '../../src/researcher/researcher.repository';
 import { Project } from '../../src/project/entities/project.entity';
-import { Researcher } from '../../src/researcher/entities/researcher.entity';
 import { NotFoundException } from '@nestjs/common';
+import { mockResearcher, mockProject, mockProjects } from '../mocks/entities';
 
 jest.mock('../../src/project/project.repository', () => {
     return {
@@ -18,35 +19,27 @@ jest.mock('../../src/project/project.repository', () => {
     };
 });
 
+jest.mock('../../src/researcher/researcher.repository', () => {
+    return {
+        ResearcherRepository: jest.fn().mockImplementation(() => ({
+            findById: jest.fn(),
+        })),
+    };
+});
+
 describe('ProjectService', () => {
     let projectService: ProjectService;
     let projectRepository: ProjectRepository;
+    let researcherRepository: ResearcherRepository;
 
     beforeAll(() => {
         const mockRepo = {} as any;
         projectRepository = new ProjectRepository(mockRepo);
-        projectService = new ProjectService(projectRepository);
+        researcherRepository = new ResearcherRepository(mockRepo);
+        projectService = new ProjectService(projectRepository, researcherRepository);
     });
 
     it('should find all projects', async () => {
-        const mockProjects: Project[] = [
-            {
-                id: '1',
-                name: 'Project One',
-                researcher: new Researcher(),
-                status: '',
-                geometry: undefined,
-                createdAt: undefined,
-            },
-            {
-                id: '2',
-                name: 'Project Two',
-                researcher: new Researcher(),
-                status: '',
-                geometry: undefined,
-                createdAt: undefined,
-            },
-        ];
         jest.spyOn(projectRepository, 'findAll').mockResolvedValue(mockProjects);
 
         const projects = await projectService.findAll();
@@ -54,14 +47,6 @@ describe('ProjectService', () => {
     });
 
     it('should find a project by ID', async () => {
-        const mockProject: Project = {
-            id: '1',
-            name: 'Project One',
-            researcher: new Researcher(),
-            status: 'active',
-            geometry: {},
-            createdAt: new Date(),
-        };
         jest.spyOn(projectRepository, 'findById').mockResolvedValue(mockProject);
 
         const project = await projectService.findById('1');
@@ -69,38 +54,32 @@ describe('ProjectService', () => {
     });
 
     it('should create a new project', async () => {
-        const mockProject: Project = {
-            id: '1',
-            name: 'Project One',
-            researcher: new Researcher(),
-            status: 'active',
-            geometry: {},
-            createdAt: new Date(),
+        const inputData = {
+            id: mockProject.id,
+            name: mockProject.name,
+            status: mockProject.status,
+            geometry: mockProject.geometry,
+            researcher: mockProject.researcher,
         };
 
+        jest.spyOn(researcherRepository, 'findById').mockResolvedValue(mockResearcher);
         jest.spyOn(projectRepository, 'create').mockResolvedValue(mockProject);
 
-        const project = await projectService.create(mockProject);
+        const project = await projectService.create(inputData);
         expect(project).toEqual(mockProject);
     });
 
     it('should update an existing project', async () => {
-        const mockProject: Project = {
-            id: '1',
-            name: 'Updated Project',
-            researcher: new Researcher(),
-            status: 'active',
-            geometry: {},
-            createdAt: new Date(),
-        };
-
         jest.spyOn(projectRepository, 'update').mockResolvedValue(mockProject);
 
-        const updatedProject = await projectService.update('1', mockProject);
+        const updatedProject = await projectService.update('1', {
+            name: 'Updated Name',
+        });
         expect(updatedProject).toEqual(mockProject);
     });
 
     it('should delete a project by ID', async () => {
+        jest.spyOn(projectRepository, 'findById').mockResolvedValue(mockProject);
         jest.spyOn(projectRepository, 'delete').mockResolvedValue();
 
         await expect(projectService.delete('1')).resolves.toBeUndefined();
@@ -109,24 +88,18 @@ describe('ProjectService', () => {
     it('should throw NotFoundException if project not found on delete', async () => {
         jest.spyOn(projectRepository, 'findById').mockResolvedValue(null);
 
-        await expect(projectService.delete('non-existent-id'))
-            .rejects
-            .toThrow(NotFoundException);
+        await expect(projectService.delete('non-existent-id')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw NotFoundException if project not found on findById', async () => {
         jest.spyOn(projectRepository, 'findById').mockResolvedValue(null);
 
-        await expect(projectService.findById('non-existent-id'))
-            .rejects
-            .toThrow(NotFoundException);
+        await expect(projectService.findById('non-existent-id')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw NotFoundException if project not found on update', async () => {
         jest.spyOn(projectRepository, 'update').mockResolvedValue(null);
 
-        await expect(projectService.update('non-existent-id', {} as Project))
-            .rejects
-            .toThrow(NotFoundException);
+        await expect(projectService.update('non-existent-id', {})).rejects.toThrow(NotFoundException);
     });
 });

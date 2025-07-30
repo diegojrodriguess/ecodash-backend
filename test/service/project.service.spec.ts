@@ -5,6 +5,7 @@ import { ResearcherRepository } from '../../src/researcher/researcher.repository
 import { Project } from '../../src/project/entities/project.entity';
 import { NotFoundException } from '@nestjs/common';
 import { mockResearcher, mockProject, mockProjects } from '../mocks/entities';
+import { CreateProjectDto } from '../../src/project/dto/create-project.dto';
 
 jest.mock('../../src/project/project.repository', () => {
     return {
@@ -59,7 +60,7 @@ describe('ProjectService', () => {
             name: mockProject.name,
             status: mockProject.status,
             geometry: mockProject.geometry,
-            researcher: mockProject.researcher,
+            researcherId: mockProject.researcher.id,
         };
 
         jest.spyOn(researcherRepository, 'findById').mockResolvedValue(mockResearcher);

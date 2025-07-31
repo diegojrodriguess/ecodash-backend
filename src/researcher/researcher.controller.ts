@@ -25,6 +25,14 @@ export class ResearcherController {
   findById(@Param('id') id: string) {
     return this.researcherService.findById(id);
   }
+  
+  @Get('name/:name')
+  @ApiOperation({ summary: 'Get researcher by name' })
+  @ApiParam({ name: 'name' })
+  @ApiResponse({ status: 200, description: 'Researcher found' })
+  findByName(@Param('name') name: string) {
+    return this.researcherService.findByName(name);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a new researcher' })

@@ -11,6 +11,7 @@ jest.mock('../../src/researcher/researcher.repository', () => {
         ResearcherRepository: jest.fn().mockImplementation(() => ({
             findAll: jest.fn(),
             findById: jest.fn(),
+            findByName: jest.fn(),
             create: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
@@ -39,6 +40,13 @@ describe('ResearcherService', () => {
         jest.spyOn(researcherRepository, 'findById').mockResolvedValue(mockResearcher);
 
         const result = await researcherService.findById('1');
+        expect(result).toEqual(mockResearcher);
+    });
+
+    it('should find a researcher by name', async () => {
+        jest.spyOn(researcherRepository, 'findByName').mockResolvedValue(mockResearcher);
+
+        const result = await researcherService.findByName('John Doe');
         expect(result).toEqual(mockResearcher);
     });
 

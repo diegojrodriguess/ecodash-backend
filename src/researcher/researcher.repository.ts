@@ -18,6 +18,10 @@ export class ResearcherRepository {
     return this.repo.findOne({ where: { id } });
   }
 
+  async findByName(name: string): Promise<Researcher | null> {
+    return this.repo.findOne({ where: { name } });
+  }
+
   async create(name: string): Promise<Researcher> {
     const researcher = this.repo.create({ name });
     return this.repo.save(researcher);

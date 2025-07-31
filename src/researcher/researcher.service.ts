@@ -18,6 +18,14 @@ export class ResearcherService {
     return researcher;
   }
 
+  async findByName(name: string): Promise<Researcher> {
+    const researcher = await this.researcherRepo.findByName(name);
+    if (!researcher) {
+      throw new NotFoundException(`Researcher with name '${name}' not found.`);
+    }
+    return researcher;
+  }
+
   async create(name: string): Promise<Researcher> {
     return this.researcherRepo.create(name);
   }

@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ResearcherService } from './researcher.service';
 import { CreateResearcherDto } from './dto/create-researcher.dto';
 import { UpdateResearcherDto } from './dto/update-researcher.dto';
 import {
-  ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam,
+  ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiQuery,
 } from '@nestjs/swagger';
 
 @ApiTags('Researchers')
@@ -12,9 +12,13 @@ export class ResearcherController {
   constructor(private readonly researcherService: ResearcherService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all researchers' })
+  @ApiOperation({ summary: 'Get all researchers or filter by name' })
+  @ApiQuery({ name: 'name', required: false })
   @ApiResponse({ status: 200, description: 'List of researchers' })
-  findAll() {
+  findAll(@Query('name') name?: string) {
+    if (name) {
+      return this.researcherService.findByName(name);
+    }
     return this.researcherService.findAll();
   }
 
@@ -24,14 +28,6 @@ export class ResearcherController {
   @ApiResponse({ status: 200, description: 'Researcher found' })
   findById(@Param('id') id: string) {
     return this.researcherService.findById(id);
-  }
-  
-  @Get('name/:name')
-  @ApiOperation({ summary: 'Get researcher by name' })
-  @ApiParam({ name: 'name' })
-  @ApiResponse({ status: 200, description: 'Researcher found' })
-  findByName(@Param('name') name: string) {
-    return this.researcherService.findByName(name);
   }
 
   @Post()

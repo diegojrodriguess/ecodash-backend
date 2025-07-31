@@ -137,7 +137,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Mangrove Recovery\",\n  \"status\": \"completed\"\n}"
+              "raw": "{\n  \"name\": \"Updated Mangrove Recovery\",\n  \"status\": \"finalized\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/projects/{{project_id}}",

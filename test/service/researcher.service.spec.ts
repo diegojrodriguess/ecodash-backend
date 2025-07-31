@@ -44,10 +44,10 @@ describe('ResearcherService', () => {
     });
 
     it('should find a researcher by name', async () => {
-        jest.spyOn(researcherRepository, 'findByName').mockResolvedValue(mockResearcher);
+        jest.spyOn(researcherRepository, 'findByName').mockResolvedValue([mockResearcher]);
 
         const result = await researcherService.findByName('John Doe');
-        expect(result).toEqual(mockResearcher);
+        expect(result).toEqual([mockResearcher]);
     });
 
     it('should create a new researcher', async () => {

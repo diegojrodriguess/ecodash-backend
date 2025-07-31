@@ -78,3 +78,20 @@ Utilize a collection ecodash_api.json (localizada na raiz do projeto).
     /projects
 
     /researchers
+
+## 📚 Documentação Interativa (Swagger)
+A Ecodash API conta com documentação interativa via Swagger.
+
+### Passos
+Depois de subir a API com npm run start, acesse:
+```bash
+http://localhost:3000/api
+```
+
+### Funcionalidades do Swagger:
+
+1. Explora todos os endpoints disponíveis
+2. Visualiza exemplos de requisição e resposta
+3. Testa chamadas diretamente do navegador
+4. Exibe validações feitas nos DTOs
+

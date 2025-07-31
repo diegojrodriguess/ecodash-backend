@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
@@ -6,21 +7,26 @@ import {
 } from 'class-validator';
 
 export class CreateProjectDto {
+  @ApiProperty({ example: 'Mangrove Recovery' })
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @ApiProperty({ enum: ['active', 'finalized'], example: 'active' })
   @IsString()
-  @IsIn(['active', 'finalized'], {
-    message: 'Status must be either "active" or "finalized".',
-  })
+  @IsIn(['active', 'finalized'])
   status: string;
 
+  @ApiProperty({
+    example: { type: 'Point', coordinates: [100.0, 0.0] },
+    description: 'GeoJSON geometry object',
+  })
   @IsObject()
-  @IsNotEmpty({ message: 'Geometry is required and must be a GeoJSON object.' })
+  @IsNotEmpty()
   geometry: object;
 
+  @ApiProperty({ example: 'researcher-uuid' })
   @IsString()
-  @IsNotEmpty({ message: 'Researcher ID is required.' })
+  @IsNotEmpty()
   researcherId: string;
 }

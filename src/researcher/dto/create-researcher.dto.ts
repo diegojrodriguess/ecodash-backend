@@ -1,7 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateResearcherDto {
-  @IsString({ message: 'Name must be a string.' })
-  @IsNotEmpty({ message: 'Name is required.' })
+  @ApiProperty({ example: 'Jane Goodall' })
+  @IsString()
+  @IsNotEmpty()
   name: string;
 }
